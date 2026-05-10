@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Islamic Archive Audio Player | مشغل الأرشيف الإسلامي</title>
+  <meta name="description" content="منصة بحث وتشغيل متقدمة للمحتوى الصوتي الإسلامي من Internet Archive بواجهة مشابهة لـ Spotify، مع دعم لغوي عربي ذكي." />
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="theme-color" content="#0a0e0a" />
+  <link rel="canonical" href="https://example.com/" />
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Islamic Archive Audio Player" />
+  <meta property="og:description" content="بحث وتشغيل للمجموعات الصوتية الإسلامية من Internet Archive بواجهة حديثة." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_AR" />
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:site_name" content="Islamic Archive Audio Player" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Islamic Archive Audio Player" />
+  <meta name="twitter:description" content="منصة بحث وتشغيل متقدمة للمحتوى الصوتي الإسلامي." />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Islamic Archive Audio Player",
+    "alternateName": "مشغل الأرشيف الإسلامي",
+    "url": "https://example.com/",
+    "description": "منصة بحث وتشغيل متقدمة للمحتوى الصوتي الإسلامي من Internet Archive",
+    "applicationCategory": "Multimedia",
+    "operatingSystem": "All",
+    "inLanguage": ["ar", "en"],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://archive.org" crossorigin>
+  <link rel="preconnect" href="https://ia802506.us.archive.org" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">تخطي إلى المحتوى</a>
+
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="التنقل">
+      <div class="brand">
+        <div class="brand__logo" aria-hidden="true">IA</div>
+        <div class="brand__text">
+          <div class="brand__title"> الأرشيف الإسلامي</div>
+          <div class="brand__sub">مشغل صوتي</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav__item is-active" data-route="home" aria-current="page">
+          <span class="nav__icon">⌂</span>
+          <span class="nav__label">الرئيسية</span>
+        </button>
+        <button class="nav__item" data-route="trending">
+          <span class="nav__icon">↗</span>
+          <span class="nav__label">الأكثر رواجاً</span>
+        </button>
+        <button class="nav__item" data-route="reciters">
+          <span class="nav__icon">۞</span>
+          <span class="nav__label">قراء/مشايخ</span>
+        </button>
+        <button class="nav__item" data-route="favorites">
+          <span class="nav__icon">❤</span>
+          <span class="nav__label">المفضلة</span>
+        </button>
+        <button class="nav__item" data-route="recent">
+          <span class="nav__icon">⟲</span>
+          <span class="nav__label">تم تشغيله مؤخراً</span>
+        </button>
+      </nav>
+
+      <section class="sidebar-card" aria-label="خيارات">
+        <div class="sidebar-card__title">أدوات</div>
+        <button class="pill" id="btnSleepTimer" type="button" title="مؤقت النوم">
+          ⏾ مؤقت النوم
+        </button>
+        <button class="pill" id="btnOfflineCache" type="button" title="تخزين قوائم التشغيل محلياً">
+          ⬇︎ حفظ القائمة (Offline*)
+        </button>
+        <button class="pill" id="btnManual" type="button" title="دليل المستخدم">
+          📖 دليل المستخدم
+        </button>
+        <div class="sidebar-card__hint">
+          * حفظ بيانات/روابط القائمة محلياً (ليس تنزيل الملفات).
+        </div>
+      </section>
+
+      <footer class="sidebar-footer">
+        <div class="tiny">
+          يعتمد على <a href="https://archive.org" target="_blank" rel="noreferrer">Internet Archive</a> API.
+        </div>
+      </footer>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button class="icon-btn" id="btnSidebar" type="button" aria-label="فتح/إغلاق القائمة الجانبية">☰</button>
+          <div class="breadcrumbs" id="breadcrumbs" aria-live="polite">
+            <span>الرئيسية</span>
+          </div>
+        </div>
+
+        <div class="topbar__search" role="search">
+          <label class="sr-only" for="searchInput">بحث</label>
+          <div class="searchbox">
+            <span class="searchbox__icon" aria-hidden="true">⌕</span>
+            <input
+              id="searchInput"
+              type="search"
+              inputmode="search"
+              autocomplete="off"
+              placeholder="ابحث عن: قرآن، تفسير، حديث، فقه... (يدعم تطبيع عربي ذكي)"
+              aria-describedby="searchHelp"
+            />
+            <button class="icon-btn" id="btnVoice" type="button" aria-label="بحث صوتي">🎙</button>
+            <button class="icon-btn" id="btnClear" type="button" aria-label="مسح">✕</button>
+          </div>
+          <div id="searchHelp" class="tiny muted">
+            اقتراحات فورية + فلترة إسلامية تلقائية + تجاهل التشكيل والهمزات.
+          </div>
+
+          <div class="suggestions" id="suggestions" role="listbox" aria-label="اقتراحات البحث"></div>
+        </div>
+
+        <div class="topbar__right">
+          <div class="chip" title="حالة الاتصال" id="netStatus">● متصل</div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main id="main" class="content" tabindex="-1">
+        <!-- Filters -->
+        <section class="panel glass" aria-label="خيارات البحث المتقدمة">
+          <div class="panel__row">
+            <div class="filters">
+              <div class="filter">
+                <label for="filterType">النوع</label>
+                <select id="filterType">
+                  <option value="all">الكل (صوتي)</option>
+                  <option value="quran">قرآن</option>
+                  <option value="tafsir">تفسير</option>
+                  <option value="hadith">حديث</option>
+                  <option value="fiqh">فقه</option>
+                  <option value="aqidah">عقيدة</option>
+                  <option value="seerah">سيرة</option>
+                  <option value="lectures">محاضرات</option>
+                  <option value="adhkar">أذكار</option>
+                  <option value="arabic">علوم اللغة</option>
+                  <option value="history">تاريخ إسلامي</option>
+                </select>
+              </div>
+
+              <div class="filter">
+                <label for="filterSort">ترتيب النتائج</label>
+                <select id="filterSort">
+                  <option value="downloads_desc">الأكثر تحميلاً</option>
+                  <option value="relevance">الأكثر صلة</option>
+                  <option value="title_asc">العنوان (أ-ي)</option>
+                </select>
+              </div>
+
+              <div class="filter">
+                <label for="filterRows">عدد النتائج</label>
+                <select id="filterRows">
+                  <option value="24">24</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+
+              <div class="filter">
+                <label class="check">
+                  <input type="checkbox" id="filterStrict" checked />
+                  <span>فلترة إسلامية صارمة</span>
+                </label>
+              </div>
+
+              <div class="filter">
+                <label class="check">
+                  <input type="checkbox" id="filterRTL" checked />
+                  <span>عرض RTL</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="panel__actions">
+              <button class="btn" id="btnSearch" type="button">بحث</button>
+              <button class="btn btn--ghost" id="btnRandom" type="button" title="اقتراح عشوائي">اقتراح</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sections -->
+        <section class="grid" aria-label="نتائج البحث">
+          <header class="section-head">
+            <h2 class="section-title" id="resultsTitle">اكتشف مكتبات صوتية إسلامية</h2>
+            <div class="section-meta" id="resultsMeta"></div>
+          </header>
+
+          <div class="cards" id="resultsGrid" aria-live="polite"></div>
+
+          <div class="pager" id="pager">
+            <button class="btn btn--ghost" id="btnPrev" type="button">السابق</button>
+            <div class="tiny muted" id="pageInfo">صفحة 1</div>
+            <button class="btn btn--ghost" id="btnNext" type="button">التالي</button>
+          </div>
+        </section>
+
+        <!-- Playlist Drawer -->
+        <section class="drawer" id="drawer" aria-label="قائمة التشغيل" aria-hidden="true">
+          <div class="drawer__head glass">
+            <div class="drawer__title">
+              <div class="cover" id="drawerCover" aria-hidden="true"></div>
+              <div>
+                <div class="h3" id="drawerTitle">قائمة التشغيل</div>
+                <div class="tiny muted" id="drawerSub"></div>
+              </div>
+            </div>
+
+            <div class="drawer__controls">
+              <button class="icon-btn" id="btnFavCollection" type="button" aria-label="إضافة/إزالة من المفضلة">❤</button>
+              <button class="icon-btn" id="btnCloseDrawer" type="button" aria-label="إغلاق">✕</button>
+            </div>
+          </div>
+
+          <div class="drawer__body">
+            <div class="drawer__toolbar">
+              <div class="searchbox searchbox--small">
+                <span class="searchbox__icon" aria-hidden="true">⌕</span>
+                <input id="playlistSearch" type="search" placeholder="ابحث داخل القائمة..." />
+              </div>
+
+              <div class="seg">
+                <button class="seg__btn is-active" data-sort="track">الترتيب</button>
+                <button class="seg__btn" data-sort="title">العنوان</button>
+                <button class="seg__btn" data-sort="duration">المدة</button>
+              </div>
+
+              <button class="btn" id="btnPlayAll" type="button">تشغيل الكل</button>
+            </div>
+
+            <div class="list" id="trackList" role="list"></div>
+
+            <div class="list-footer" id="listFooter">
+              <div class="tiny muted" id="listStatus"></div>
+              <button class="btn btn--ghost" id="btnLoadMoreTracks" type="button">تحميل المزيد</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Toast -->
+        <div class="toast" id="toast" aria-live="assertive" aria-atomic="true"></div>
+      </main>
+
+      <!-- Player -->
+      <footer class="player glass" aria-label="مشغل الصوت">
+        <div class="player__left">
+          <div class="mini-cover" id="miniCover" aria-hidden="true"></div>
+          <div class="now">
+            <div class="now__title" id="nowTitle">—</div>
+            <div class="now__meta" id="nowMeta">جاهز للتشغيل</div>
+          </div>
+        </div>
+
+        <div class="player__center">
+          <div class="controls" aria-label="التحكم">
+            <button class="icon-btn" id="btnShuffle" type="button" aria-label="خلط">⤮</button>
+            <button class="icon-btn" id="btnPrevTrack" type="button" aria-label="السابق">⟨⟨</button>
+            <button class="play-btn" id="btnPlayPause" type="button" aria-label="تشغيل/إيقاف">▶</button>
+            <button class="icon-btn" id="btnNextTrack" type="button" aria-label="التالي">⟩⟩</button>
+            <button class="icon-btn" id="btnRepeat" type="button" aria-label="تكرار">⟲</button>
+          </div>
+
+          <div class="timeline" aria-label="شريط التقدم">
+            <span class="time tiny" id="timeCurrent">0:00</span>
+            <input id="seek" type="range" min="0" max="1000" value="0" aria-label="تحريك التقدم" />
+            <span class="time tiny" id="timeTotal">0:00</span>
+          </div>
+
+          <div class="sub-controls">
+            <label class="tiny muted" for="speed">السرعة</label>
+            <select id="speed" aria-label="سرعة التشغيل">
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+
+            <button class="btn btn--ghost btn--tiny" id="btnMini" type="button">مصغّر</button>
+          </div>
+        </div>
+
+        <div class="player__right">
+          <div class="vol" aria-label="الصوت">
+            <span class="tiny muted">الصوت</span>
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="0.9" aria-label="مستوى الصوت" />
+          </div>
+        </div>
+
+        <audio id="audio" preload="metadata"></audio>
+      </footer>
+    </div>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="نافذة">
+    <div class="modal__backdrop" data-close="1"></div>
+    <div class="modal__panel glass" role="document">
+      <div class="modal__head">
+        <div class="h3" id="modalTitle">إعدادات</div>
+        <button class="icon-btn" id="btnCloseModal" type="button" aria-label="إغلاق">✕</button>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__foot" id="modalFoot"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
